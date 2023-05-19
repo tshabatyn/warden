@@ -49,35 +49,41 @@ if [[ ! -f "${MUTAGEN_SYNC_FILE}" ]]; then
   fatal "Mutagen configuration does not exist for environment type \"${WARDEN_ENV_TYPE}\""
 fi
 
+MUTAGEN_SYNC_LABEL=${WARDEN_ENV_NAME}${MUTAGEN_CONTAINER_FOR_SYNC}
+
 ## sub-command execution
 case "${WARDEN_PARAMS[0]}" in
     start)
         ## terminate any existing sessions with matching env label
-        mutagen sync terminate --label-selector "warden-sync=${WARDEN_ENV_NAME}"
+        mutagen sync terminate --label-selector "warden-sync=${MUTAGEN_SYNC_LABEL}"
+
+        echo "MUTAGEN_CONTAINER_FOR_SYNC: ${MUTAGEN_CONTAINER_FOR_SYNC}"
+        echo "MUTAGEN_SYNC_LABEL: ${MUTAGEN_SYNC_LABEL}"
 
         ## create sync session based on environment type configuration
         mutagen sync create -c "${MUTAGEN_SYNC_FILE}" \
-            --label "warden-sync=${WARDEN_ENV_NAME}" --ignore "${WARDEN_SYNC_IGNORE:-}" \
-            "${WARDEN_ENV_PATH}${WARDEN_WEB_ROOT:-}" "docker://$($WARDEN_BIN env ps -q php-fpm)/var/www/html"
+            --label "warden-sync=${MUTAGEN_SYNC_LABEL}" --ignore "${WARDEN_SYNC_IGNORE:-}" \
+            "${WARDEN_ENV_PATH}${WARDEN_WEB_ROOT:-}" \
+            "docker://$($WARDEN_BIN env ps -q ${MUTAGEN_CONTAINER_FOR_SYNC:-php-fpm})/var/www/html"
 
         ## wait for sync session to complete initial sync before exiting
         echo "Waiting for initial synchronization to complete"
-        while ! mutagen sync list --label-selector "warden-sync=${WARDEN_ENV_NAME}" \
+        while ! mutagen sync list --label-selector "warden-sync=${MUTAGEN_SYNC_LABEL}" \
             | grep -i 'watching for changes'>/dev/null;
                 do
-                    if mutagen sync list --label-selector "warden-sync=${WARDEN_ENV_NAME}" \
+                    if mutagen sync list --label-selector "warden-sync=${MUTAGEN_SYNC_LABEL}" \
                         | grep -i 'Last error' > /dev/null; then
-                        MUTAGEN_ERROR=$(mutagen sync list --label-selector "warden-sync=${WARDEN_ENV_NAME}" \
+                        MUTAGEN_ERROR=$(mutagen sync list --label-selector "warden-sync=${MUTAGEN_SYNC_LABEL}" \
                             | sed -n 's/Last error: \(.*\)/\1/p')
                         fatal "Mutagen encountered an error during sync: ${MUTAGEN_ERROR}"
                     fi
                     printf .; sleep 1; done; echo
         ;;
     stop)
-        mutagen sync terminate --label-selector "warden-sync=${WARDEN_ENV_NAME}"
+        mutagen sync terminate --label-selector "warden-sync=${MUTAGEN_SYNC_LABEL}"
         ;;
     list|flush|monitor|pause|reset|resume)
-        mutagen sync "${WARDEN_PARAMS[@]}" "${@}" --label-selector "warden-sync=${WARDEN_ENV_NAME}"
+        mutagen sync "${WARDEN_PARAMS[@]}" "${@}" --label-selector "warden-sync=${MUTAGEN_SYNC_LABEL}"
         ;;
     *)
         fatal "The command \"${WARDEN_PARAMS[0]}\" does not exist. Please use --help for usage."

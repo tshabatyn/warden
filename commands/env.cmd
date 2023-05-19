@@ -200,9 +200,9 @@ ${DOCKER_COMPOSE_COMMAND} \
 if ([[ "${WARDEN_PARAMS[0]}" == "up" ]] || [[ "${WARDEN_PARAMS[0]}" == "start" ]]) \
     && [[ $OSTYPE =~ ^darwin ]] && [[ -f "${MUTAGEN_SYNC_FILE}" ]] \
     && [[ $($WARDEN_BIN sync list | grep -i 'Status: \[Paused\]' | wc -l | awk '{print $1}') == "1" ]] \
-    && [[ $($WARDEN_BIN env ps -q php-fpm) ]] \
-    && [[ $(docker container inspect "$($WARDEN_BIN env ps -q php-fpm)" --format '{{ .State.Status }}') = "running" ]] \
-    && [[ $($WARDEN_BIN env ps -q php-fpm) = $($WARDEN_BIN sync list | grep -i 'URL: docker' | awk -F'/' '{print $3}') ]]
+    && [[ $($WARDEN_BIN env ps -q ${MUTAGEN_CONTAINER_FOR_SYNC:-php-fpm}) ]] \
+    && [[ $(docker container inspect "$($WARDEN_BIN env ps -q ${MUTAGEN_CONTAINER_FOR_SYNC:-php-fpm})" --format '{{ .State.Status }}') = "running" ]] \
+    && [[ $($WARDEN_BIN env ps -q ${MUTAGEN_CONTAINER_FOR_SYNC:-php-fpm}) = $($WARDEN_BIN sync list | grep -i 'URL: docker' | awk -F'/' '{print $3}') ]]
 then
     $WARDEN_BIN sync resume
 fi
@@ -217,8 +217,8 @@ fi
 if ([[ "${WARDEN_PARAMS[0]}" == "up" ]] || [[ "${WARDEN_PARAMS[0]}" == "start" ]]) \
     && [[ $OSTYPE =~ ^darwin ]] && [[ -f "${MUTAGEN_SYNC_FILE}" ]] \
     && [[ $($WARDEN_BIN sync list | grep -c "${CONNECTION_STATE_STRING}" | awk '{print $1}') != "2" ]] \
-    && [[ $($WARDEN_BIN env ps -q php-fpm) ]] \
-    && [[ $(docker container inspect "$($WARDEN_BIN env ps -q php-fpm)" --format '{{ .State.Status }}') = "running" ]]
+    && [[ $($WARDEN_BIN env ps -q ${MUTAGEN_CONTAINER_FOR_SYNC:-php-fpm}) ]] \
+    && [[ $(docker container inspect "$($WARDEN_BIN env ps -q ${MUTAGEN_CONTAINER_FOR_SYNC:-php-fpm})" --format '{{ .State.Status }}') = "running" ]]
 then
     $WARDEN_BIN sync start
 fi
