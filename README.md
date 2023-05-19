@@ -22,14 +22,70 @@ Warden is a CLI utility for orchestrating Docker based developer environments, a
 
 ## Contributing
 
-All contributions to the Warden project are welcome: use-cases, documentation, code, patches, bug reports, feature requests, etc. Any and all contributions may be made by submitting [Issues](https://github.com/davidalger/warden/issues) and [Pull Requests](https://github.com/davidalger/warden/pulls) here on Github.
+All contributions to the Warden project are welcome: use-cases, 
+documentation, code, patches, bug reports, feature requests, etc. 
+Any and all contributions may be made by submitting [Issues](https://github.com/wardenenv/warden/issues) 
+and [Pull Requests](https://github.com/wardenenv/warden/pulls) here on GitHub.
 
-Please note that by submitting a pull request or otherwise contributing to the Warden project, you warrant that each of your contributions is an original work and that you have full authority to grant rights to said contribution and by so doing you grant the owners of the Warden project, and those who receive the contribution directly or indirectly, a perpetual, worldwide, non-exclusive, royalty-free, irrevocable license to make, have made, use, offer to sell, sell and import or otherwise dispose of the contributions alone or with the Warden project in it's entirety.
+Please note that by submitting a pull request or otherwise contributing to the Warden project, 
+you warrant that each of your contributions is an original work and that you have full authority to grant rights 
+to said contribution and by so doing you grant the owners of the Warden project, and those who receive the contribution 
+directly or indirectly, a perpetual, worldwide, non-exclusive, royalty-free, irrevocable license to 
+make, have made, use, offer to sell, sell and import or otherwise dispose of the contributions alone 
+or with the Warden project in it's entirety.
 
 ## License
 
-This work is licensed under the MIT license. See [LICENSE](https://github.com/davidalger/warden/blob/develop/LICENSE) file for details.
+This work is licensed under the MIT license. 
+See [LICENSE](https://github.com/wardenenv/warden/blob/develop/LICENSE) file for details.
 
 ## Author Information
 
 This project was started in 2019 by [David Alger](https://davidalger.com/).
+
+## Mutagen files syncing
+
+The [mutagen](https://mutagen.io/) can significantly improve the performance of the big projects. 
+Which contains a huge number of small files on macOS based systems. 
+For an instance, we can consider the projects which might have a lot of libraries/packages installed 
+under the `vendor` or `node_modules` directories.
+For enabling mutagen on the predefined container, 
+you just need to assign the container name at the `.env` file, 
+to the variable `MUTAGEN_CONTAINER_FOR_SYNC`.
+For an instance it might look like the following `MUTAGEN_CONTAINER_FOR_SYNC=nuxt-nodejs`.
+Also, you need to create syncing rules file, for the mutagen, by the path `.warden/mutagen.yml`.
+Such file might look like the following.
+
+```yaml
+---
+sync:
+  defaults:
+    mode: two-way-resolved
+    watch:
+      pollingInterval: 10
+    ignore:
+      vcs: false
+      paths:
+        # Root .git folder
+        - "/.git/"
+        - "/.github/"
+
+        # System files
+        - ".DS_Store"
+        - "._*"
+
+        # Vim files
+        - "*~"
+        - "*.sw[a-p]"
+
+        # NodeJS files
+        - "/node_modules/**"
+        - "/docs/**"
+        - "/kubernetes/**"
+        - "/packages/**"
+
+    permissions:
+      defaultFileMode: "0644"
+      defaultDirectoryMode: "0755"
+
+```
