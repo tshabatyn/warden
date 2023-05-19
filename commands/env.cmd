@@ -62,7 +62,7 @@ if [[ ${WARDEN_ENV_SUBT} == "linux" && $UID == 1000 ]]; then
     export SSH_AUTH_SOCK_PATH_ENV=/run/host-services/ssh-auth.sock
 fi
 
-## configure docker-compose files
+## configure docker compose files
 DOCKER_COMPOSE_ARGS=()
 
 appendEnvPartialIfExists "networks"
@@ -145,7 +145,7 @@ fi
 if [[ "${WARDEN_PARAMS[0]}" == "up" ]]; then
     ## create environment network for attachments if it does not already exist
     if [[ $(docker network ls -f "name=$(renderEnvNetworkName)" -q) == "" ]]; then
-        docker-compose \
+        ${DOCKER_COMPOSE_COMMAND} \
             --project-directory "${WARDEN_ENV_PATH}" -p "${WARDEN_ENV_NAME}" \
             "${DOCKER_COMPOSE_ARGS[@]}" up --no-start
     fi
@@ -191,8 +191,8 @@ then
     $WARDEN_BIN sync pause
 fi
 
-## pass ochestration through to docker-compose
-docker-compose \
+## pass ochestration through to docker compose
+${DOCKER_COMPOSE_COMMAND} \
     --project-directory "${WARDEN_ENV_PATH}" -p "${WARDEN_ENV_NAME}" \
     "${DOCKER_COMPOSE_ARGS[@]}" "${WARDEN_PARAMS[@]}" "$@"
 
@@ -201,18 +201,24 @@ if ([[ "${WARDEN_PARAMS[0]}" == "up" ]] || [[ "${WARDEN_PARAMS[0]}" == "start" ]
     && [[ $OSTYPE =~ ^darwin ]] && [[ -f "${MUTAGEN_SYNC_FILE}" ]] \
     && [[ $($WARDEN_BIN sync list | grep -i 'Status: \[Paused\]' | wc -l | awk '{print $1}') == "1" ]] \
     && [[ $($WARDEN_BIN env ps -q php-fpm) ]] \
-    && [[ $(docker container inspect $($WARDEN_BIN env ps -q php-fpm) --format '{{ .State.Status }}') = "running" ]] \
+    && [[ $(docker container inspect "$($WARDEN_BIN env ps -q php-fpm)" --format '{{ .State.Status }}') = "running" ]] \
     && [[ $($WARDEN_BIN env ps -q php-fpm) = $($WARDEN_BIN sync list | grep -i 'URL: docker' | awk -F'/' '{print $3}') ]]
 then
     $WARDEN_BIN sync resume
 fi
 
+MUTAGEN_VERSION=$(mutagen version)
+CONNECTION_STATE_STRING='Connected state: Connected'
+if [[ $(version "${MUTAGEN_VERSION}") -ge $(version '0.15.0') ]]; then
+  CONNECTION_STATE_STRING='Connected: Yes'
+fi
+
 ## start mutagen sync if needed
 if ([[ "${WARDEN_PARAMS[0]}" == "up" ]] || [[ "${WARDEN_PARAMS[0]}" == "start" ]]) \
     && [[ $OSTYPE =~ ^darwin ]] && [[ -f "${MUTAGEN_SYNC_FILE}" ]] \
-    && [[ $($WARDEN_BIN sync list | grep -i 'Connection state: Connected' | wc -l | awk '{print $1}') != "2" ]] \
+    && [[ $($WARDEN_BIN sync list | grep -c "${CONNECTION_STATE_STRING}" | awk '{print $1}') != "2" ]] \
     && [[ $($WARDEN_BIN env ps -q php-fpm) ]] \
-    && [[ $(docker container inspect $($WARDEN_BIN env ps -q php-fpm) --format '{{ .State.Status }}') = "running" ]]
+    && [[ $(docker container inspect "$($WARDEN_BIN env ps -q php-fpm)" --format '{{ .State.Status }}') = "running" ]]
 then
     $WARDEN_BIN sync start
 fi
