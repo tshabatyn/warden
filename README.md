@@ -34,6 +34,13 @@ directly or indirectly, a perpetual, worldwide, non-exclusive, royalty-free, irr
 make, have made, use, offer to sell, sell and import or otherwise dispose of the contributions alone 
 or with the Warden project in it's entirety.
 
+## Where to Contribute
+
+* [warden](https://github.com/wardenenv/warden) - `warden` commands and docker-compose files
+* [images](https://github.com/wardenenv/images) - Docker images to be used by the docker-compose files
+* [docs](https://github.com/wardenenv/docs) - Documentation (docs.warden.dev)
+* [homebrew-warden](https://github.com/wardenenv/homebrew-warden) - Mac's Homebrew installation instructions and requirements
+
 ## License
 
 This work is licensed under the MIT license. 
@@ -45,12 +52,12 @@ This project was started in 2019 by [David Alger](https://davidalger.com/).
 
 ## Mutagen files syncing
 
-The [mutagen](https://mutagen.io/) can significantly improve the performance of the big projects. 
-Which contains a huge number of small files on macOS based systems. 
-For an instance, we can consider the projects which might have a lot of libraries/packages installed 
+The [mutagen](https://mutagen.io/) can significantly improve the performance of the big projects.
+Which contains a huge number of small files on macOS based systems.
+For an instance, we can consider the projects which might have a lot of libraries/packages installed
 under the `vendor` or `node_modules` directories.
-For enabling mutagen on the predefined container, 
-you just need to assign the container name at the `.env` file, 
+For enabling mutagen on the predefined container,
+you just need to assign the container name at the `.env` file,
 to the variable `MUTAGEN_CONTAINER_FOR_SYNC`.
 For an instance it might look like the following `MUTAGEN_CONTAINER_FOR_SYNC=nuxt-nodejs`.
 Also, you need to create syncing rules file, for the mutagen, by the path `.warden/mutagen.yml`.
@@ -89,3 +96,10 @@ sync:
       defaultDirectoryMode: "0755"
 
 ```
+
+# Gold Sponsors
+[![SwiftOtter](https://warden.dev/img/sponsors/swiftotter.svg)](https://www.swiftotter.com/)  
+[![Sansec.io](https://warden.dev/img/sponsors/sansec.svg)](https://www.sansec.io/)  
+[![Hyvä](https://user-images.githubusercontent.com/145128/226427529-53483968-c9ab-484a-9ae3-c6abb58f81c9.png)](https://www.hyva.io/)
+
+Support Warden Development on <a href="https://opencollective.com/warden" rel="me" class="link">OpenCollective</a> or <a href="https://github.com/sponsors/wardenenv" rel="me" class="link">Github Sponsors</a>
