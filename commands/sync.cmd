@@ -49,7 +49,7 @@ if [[ ! -f "${MUTAGEN_SYNC_FILE}" ]]; then
   fatal "Mutagen configuration does not exist for environment type \"${WARDEN_ENV_TYPE}\""
 fi
 
-MUTAGEN_SYNC_LABEL="${WARDEN_ENV_NAME}-${MUTAGEN_CONTAINER_FOR_SYNC:-php-fpm}-label"
+MUTAGEN_SYNC_LABEL="${WARDEN_ENV_NAME}-${WARDEN_CONTAINER_FOR_SYNC:-php-fpm}-label"
 
 ## sub-command execution
 case "${WARDEN_PARAMS[0]}" in
@@ -57,14 +57,14 @@ case "${WARDEN_PARAMS[0]}" in
         ## terminate any existing sessions with matching env label
         mutagen sync terminate --label-selector "warden-sync=${MUTAGEN_SYNC_LABEL}"
 
-        echo "MUTAGEN_CONTAINER_FOR_SYNC: ${MUTAGEN_CONTAINER_FOR_SYNC}"
+        echo "WARDEN_CONTAINER_FOR_SYNC: ${WARDEN_CONTAINER_FOR_SYNC}"
         echo "MUTAGEN_SYNC_LABEL: ${MUTAGEN_SYNC_LABEL}"
 
         ## create sync session based on environment type configuration
         mutagen sync create -c "${MUTAGEN_SYNC_FILE}" \
             --label "warden-sync=${MUTAGEN_SYNC_LABEL}" --ignore "${WARDEN_SYNC_IGNORE:-}" \
             "${WARDEN_ENV_PATH}${WARDEN_WEB_ROOT:-}" \
-            "docker://$($WARDEN_BIN env ps -q ${MUTAGEN_CONTAINER_FOR_SYNC:-php-fpm})/var/www/html"
+            "docker://$($WARDEN_BIN env ps -q ${WARDEN_CONTAINER_FOR_SYNC:-php-fpm})/var/www/html"
 
         ## wait for sync session to complete initial sync before exiting
         echo "Waiting for initial synchronization to complete"

@@ -58,8 +58,8 @@ For an instance, we can consider the projects which might have a lot of librarie
 under the `vendor` or `node_modules` directories.
 For enabling mutagen on the predefined container,
 you just need to assign the container name at the `.env` file,
-to the variable `MUTAGEN_CONTAINER_FOR_SYNC`.
-For an instance it might look like the following `MUTAGEN_CONTAINER_FOR_SYNC=nuxt-nodejs`.
+to the variable `WARDEN_CONTAINER_FOR_SYNC`.
+For an instance it might look like the following `WARDEN_CONTAINER_FOR_SYNC=nuxt-nodejs`.
 Also, you need to create syncing rules file, for the mutagen, by the path `.warden/mutagen.yml`.
 Such file might look like the following.
 
