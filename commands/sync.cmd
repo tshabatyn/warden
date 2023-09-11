@@ -49,7 +49,7 @@ if [[ ! -f "${MUTAGEN_SYNC_FILE}" ]]; then
   fatal "Mutagen configuration does not exist for environment type \"${WARDEN_ENV_TYPE}\""
 fi
 
-MUTAGEN_SYNC_LABEL=${WARDEN_ENV_NAME}${MUTAGEN_CONTAINER_FOR_SYNC}
+MUTAGEN_SYNC_LABEL="${WARDEN_ENV_NAME}-${MUTAGEN_CONTAINER_FOR_SYNC:-php-fpm}-label"
 
 ## sub-command execution
 case "${WARDEN_PARAMS[0]}" in
