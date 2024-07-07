@@ -63,6 +63,10 @@ For an instance it might look like the following `MUTAGEN_CONTAINER_FOR_SYNC=nux
 Also, you need to create syncing rules file, for the mutagen, by the path `.warden/mutagen.yml`.
 Such file might look like the following.
 
+As an option you may add the variable `MUTAGEN_CONTAINER_SYNC_TO_DIR`,
+the value of this variable will override the base container path, i.e. `/var/www/html`.
+Example: `MUTAGEN_CONTAINER_SYNC_TO_DIR="/app"`
+
 ```yaml
 ---
 sync:
