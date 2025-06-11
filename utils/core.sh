@@ -19,7 +19,7 @@ function fatal {
 }
 
 function version {
-  echo "$@" | awk -F. '{ printf("%d%03d%03d%03d\n", $1,$2,$3,$4); }';
+  echo "$@" | awk -F. '{ print ($1 * 1000000) + ($2 * 10000) + ($3 * 100) + $4 }';
 }
 
 ## determines if value is present in an array; returns 0 if element is present
