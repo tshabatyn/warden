@@ -48,7 +48,7 @@ if [[ "${WARDEN_PORTAINER_ENABLE}" == 1 ]]; then
     DOCKER_COMPOSE_ARGS+=("${WARDEN_DIR}/docker/docker-compose.portainer.yml")
 fi
 
-WARDEN_PHPMYADMIN_ENABLE="${WARDEN_PHPMYADMIN_ENABLE:-1}"
+WARDEN_PHPMYADMIN_ENABLE="${WARDEN_PHPMYADMIN_ENABLE:-0}"
 if [[ "${WARDEN_PHPMYADMIN_ENABLE}" == 1 ]]; then
     if [[ -d "${WARDEN_HOME_DIR}/etc/phpmyadmin/config.user.inc.php" ]]; then
         rm -rf ${WARDEN_HOME_DIR}/etc/phpmyadmin/config.user.inc.php

@@ -94,7 +94,7 @@ if [[ ! -f "${WARDEN_HOME_DIR}/.env" ]]; then
 		# Set to "0" to disable DNSMasq
 		WARDEN_DNSMASQ_ENABLE=1
 		# Set to "0" to disable phpMyAdmin
-		WARDEN_PHPMYADMIN_ENABLE=1
+		WARDEN_PHPMYADMIN_ENABLE=0
 		# Set to "1" to enable Mutagen
 		WARDEN_MUTAGEN_ENABLE=1
 	EOT
